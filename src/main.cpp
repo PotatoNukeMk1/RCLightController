@@ -203,12 +203,10 @@ void loop() {
       Serial.print(VERSION_MINOR, DEC);
       Serial.print(F("."));
       Serial.println(VERSION_REVISION, DEC);
-      Serial.print(F("> "));
     }
     if(Serial.available()) {
       String input = Serial.readStringUntil('\n');
       cli.parse(input);
-      Serial.print(F("> "));
     }
   }
   delay(33);
@@ -319,8 +317,11 @@ void cmd_helpCallback(cmd* c)
 void cmd_resetSettingsCallback(cmd* c)
 {
   Command cmd(c);
-  Serial.print(F("Reset changed config to previous settings (y/n)? "));
-  if(!cmd_waitForUserInputYN()) return;
+  Serial.println(F("Reset changed config to previous settings (y/n)? "));
+  if(!cmd_waitForUserInputYN()) {
+    Serial.println(F("Aborted"));
+    return;
+  }
   if(!fatfs.exists("config.bin")) {
     Serial.println(F("Error: config file doesn't exist"));
     return;
@@ -338,8 +339,11 @@ void cmd_resetSettingsCallback(cmd* c)
 void cmd_saveSettingsCallback(cmd* c)
 {
   Command cmd(c);
-  Serial.print(F("Save changed config (y/n)? "));
-  if(!cmd_waitForUserInputYN()) return;
+  Serial.println(F("Save changed config (y/n)? "));
+  if(!cmd_waitForUserInputYN()) {
+    Serial.println(F("Aborted"));
+    return;
+  }
   file = fatfs.open("config.bin", O_RDWR | O_CREAT);
   if(!file) {
     Serial.println(F("Error: failed to open config file for write"));
@@ -598,9 +602,10 @@ void cmd_setLEDCallback(cmd* c)
       aw.analogWrite(led, 255);
       Serial.print(F("Change settings for LED #"));
       Serial.print(led, DEC);
-      Serial.print(F(" (y/n)? "));
+      Serial.println(F(" (y/n)? "));
       if(!cmd_waitForUserInputYN()) {
         aw.analogWrite(led, 0);
+        Serial.println(F("Aborted"));
         return;
       }
       bool enabled = false;
@@ -610,7 +615,7 @@ void cmd_setLEDCallback(cmd* c)
       uint8_t max = 0;
       uint8_t stage[5] = {0};
       int16_t value = 0;
-      Serial.print(F("Enable this LED (y/n)? "));
+      Serial.println(F("Enable this LED (y/n)? "));
       enabled = cmd_waitForUserInputYN();
       Serial.println(F("Choose type of light"));
       Serial.println(F("1 Parking light"));
@@ -627,21 +632,25 @@ void cmd_setLEDCallback(cmd* c)
       if(value >= 1 && value <= 10) {
         type = value;
         if(type == 6 || type == 7) {
-          Serial.print(F("Combine indicator with brake (US-Style) (y/n)? "));
+          Serial.println(F("Combine indicator with brake (US-Style) (y/n)? "));
           combined = cmd_waitForUserInputYN();
         }
-        Serial.print(F("Min pwm value for this LED: "));
+        if(type == 5) {
+          Serial.println(F("Combine front extra with flashlight/high beam (y/n)? "));
+          combined = cmd_waitForUserInputYN();
+        }
+        Serial.println(F("Min pwm value for this LED (0-255): "));
         value = cmd_waitForUserInput();
         if(value >= 0 && value <= 255) {
           min = value;
-          Serial.print(F("Max pwm value for this LED: "));
+          Serial.println(F("Max pwm value for this LED (0-255): "));
           value = cmd_waitForUserInput();
           if(value >= 0 && value <= 255) {
             max = value;
             for(uint8_t i=0; i<=config.maxStage; i++) {
               Serial.print(F("Value for stage #"));
               Serial.print(i);
-              Serial.print(F(": "));
+              Serial.println(F(" (0-255): "));
               value = cmd_waitForUserInput();
               if(value < 0 || value > 255) {
                 aw.analogWrite(led, 0);
@@ -650,9 +659,10 @@ void cmd_setLEDCallback(cmd* c)
               }
               stage[i] = value;
             }
-            Serial.print(F("Do you want to keep this settings (y/n)? "));
+            Serial.println(F("Do you want to keep this settings (y/n)? "));
             if(!cmd_waitForUserInputYN()) {
               aw.analogWrite(led, 0);
+              Serial.println(F("Aborted"));
               return;
             }
             config.led[led].enabled = enabled;
@@ -754,7 +764,6 @@ bool cmd_waitForUserInputYN(void)
         while(Serial.available()) {
           Serial.read();
         }
-        Serial.println(F("Aborted"));
         return false;
       }
     }
