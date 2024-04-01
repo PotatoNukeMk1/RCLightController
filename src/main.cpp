@@ -2,7 +2,6 @@
 
 void setup() {
   Serial.begin(115200);
-  while(!Serial);
   Serial.flush();
 
   // Create cli config menu
