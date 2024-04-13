@@ -139,6 +139,7 @@ void cmd_setSteeringCallback(cmd* c);
 void cmd_setThrottleCallback(cmd* c);
 void cmd_setSwitchFCallback(cmd* c);
 void cmd_setLEDCallback(cmd* c);
+void cmd_setLEDsCallback(cmd* c);
 bool cmd_waitForUserInputYN(void);
 int16_t cmd_waitForUserInput(void);
 void xBUS_create(void);
@@ -185,6 +186,6 @@ Command cmd_setSteering;
 Command cmd_setThrottle;
 Command cmd_setSwitchF;
 Command cmd_setLED;
-Command cmd_setAllLEDs;
+Command cmd_setLEDs;
 
 #endif

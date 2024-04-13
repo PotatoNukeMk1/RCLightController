@@ -275,6 +275,9 @@ void cmd_create(void)
   cmd_setLED = cli.addCommand("led", cmd_setLEDCallback);
   cmd_setLED.addPositionalArgument("pin");
   cmd_setLED.addFlagArgument("l");
+  // leds command
+  cmd_setLEDs = cli.addCommand("leds", cmd_setLEDsCallback);
+  cmd_setLEDs.addPositionalArgument("value");
 }
 
 void cmd_errorCallback(cmd_error* e)
@@ -617,6 +620,24 @@ void cmd_setLEDCallback(cmd* c)
       int16_t value = 0;
       Serial.println(F("Enable this LED (y/n)? "));
       enabled = cmd_waitForUserInputYN();
+      if(!enabled) {
+        Serial.println(F("Reset settings to default (y/n)? "));
+        if(cmd_waitForUserInputYN()) {
+          config.led[led].enabled = false;
+          config.led[led].combined = false;
+          config.led[led].type = LIGHT_TYPE_NONE;
+          config.led[led].min = 0;
+          config.led[led].max = 0;
+          config.led[led].stage[0] = 0;
+          config.led[led].stage[1] = 0;
+          config.led[led].stage[2] = 0;
+          config.led[led].stage[3] = 0;
+          config.led[led].stage[4] = 0;
+          aw.analogWrite(led, 0);
+        }
+        Serial.println(F("Ok"));
+        return;
+      }
       Serial.println(F("Choose type of light"));
       Serial.println(F("1 Parking light"));
       Serial.println(F("2 Fog light"));
@@ -748,6 +769,17 @@ void cmd_setLEDCallback(cmd* c)
     if(k < config.maxStage) Serial.print(F(", "));
   }
   Serial.println(F("}"));
+}
+
+void cmd_setLEDsCallback(cmd* c)
+{
+  Command cmd(c);
+  Argument valueArg = cmd.getArgument(F("value"));
+  int16_t value = valueArg.getValue().toInt();
+  for(uint8_t i=0; i<16; i++) {
+    aw.analogWrite(i, value);
+  }
+  Serial.println(F("Ok"));
 }
 
 bool cmd_waitForUserInputYN(void)
