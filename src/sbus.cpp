@@ -17,6 +17,7 @@ SBUSClass::~SBUSClass()
 void SBUSClass::begin(void)
 {
     Serial.begin(100000, SERIAL_8E2);
+    Serial.setTimeout(6);
     begin(Serial);
 }
 

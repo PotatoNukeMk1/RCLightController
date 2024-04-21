@@ -6,17 +6,18 @@ const uint32_t LONG_PRESS_TIME  = 500;
 
 IBUSClass::IBUSClass(void)
 {
-
-}
+    em = new EventManager();
+}  
 
 IBUSClass::~IBUSClass(void)
 {
-
+    delete(em);
 }
 
 void IBUSClass::begin()
 {
     Serial.begin(115200);
+    Serial.setTimeout(2);
     begin(Serial);
 }
 
@@ -102,6 +103,7 @@ void IBUSClass::processInput(void)
             }
         }
     }
+    em->processEvent();
 }
 
 int16_t IBUSClass::getChannel(uint8_t channel)

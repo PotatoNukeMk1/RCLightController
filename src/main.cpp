@@ -52,7 +52,7 @@ void setup() {
   xBUS.begin(Serial1);
 #elif defined(USE_IBUS)
   Serial1.begin(115200);
-  Serial1.setTimeout(6);
+  Serial1.setTimeout(2);
   IBUS.begin(Serial1);
 #endif
 
