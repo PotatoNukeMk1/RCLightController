@@ -4,6 +4,12 @@ void setup() {
   Serial.begin(115200);
   Serial.flush();
 
+  // Initialize NeoPixel
+  pixel.begin();
+  pixel.setBrightness(32);
+  pixel.clear();
+  pixel.show();
+
   // Create cli config menu
   cmd_create();
 
@@ -39,12 +45,6 @@ void setup() {
     file.write(&config, sizeof(config));
     file.close();
   }
-
-  // Initialize NeoPixel
-  pixel.begin();
-  pixel.setBrightness(32);
-  pixel.clear();
-  pixel.show();
 
 #if defined(USE_SBUS)
   Serial1.begin(100000, SERIAL_8E2);

@@ -2,12 +2,12 @@
  
  ### What you need:
 
-* [Adafruit Qt Py M0 (Seeed Studio XIAO SAMD21 maybe also work but don't fits into the case)](https://www.adafruit.com/product/4600)
+* [Adafruit Qt Py M0](https://www.adafruit.com/product/4600) (Seeed Studio XIAO SAMD21 maybe also work but don't fits into the case)
 * [SBUS inverter](https://oshwlab.com/schmron/sbusinverter)
 * [Adafruit AW9523](https://www.adafruit.com/product/4886)
 * [50mm STEMMA QT cable](https://www.adafruit.com/product/4399)
-* [Flash chip (i tried W25Q128JV but because of the wrong package its hard to solder it)](https://www.adafruit.com/product/4763)
-* [3D printed case](https://www.printables.com/model/806489-rc-light-controller-case)
+* [Flash chip](https://www.adafruit.com/product/4763)
+* [3D printed case](https://www.printables.com/model/806489-rc-light-controller-case) (i tried W25Q128JV but because of the wrong package its hard to solder it)
 * [Firmware](https://github.com/PotatoNukeMk1/RCLightController/releases)
 
 ### Features:
